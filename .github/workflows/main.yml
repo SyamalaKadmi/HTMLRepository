@@ -19,3 +19,22 @@ jobs:
           ls -al 
           pwd
           touch hello.txt
+      - name: Sending code to the server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ./
+          target: /home/ubuntu
+
+      - name: Copy files from /home/ubuntu to /var/www/html
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo cp -rf /home/ubuntu/* /var/www/html
